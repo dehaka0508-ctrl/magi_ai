@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Cpolygon points='22,4 42,4 42,20 36,26 28,26 22,20' fill='%233ec6f2' stroke='%23ff6a1a' stroke-width='2'/%3E%3Cpolygon points='4,22 16,22 30,36 30,60 4,60' fill='%233ec6f2' stroke='%23ff6a1a' stroke-width='2'/%3E%3Cpolygon points='60,22 48,22 34,36 34,60 60,60' fill='%233ec6f2' stroke='%23ff6a1a' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+JP:wght@700;900&family=Roboto+Condensed:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+JP:wght@700;900&family=Oxanium:wght@600;800&family=Roboto+Condensed:wght@400;700&display=swap">
 <!-- 답변 마크다운 렌더링 (없으면 일반 텍스트로 표시) -->
 <script src="vendor/marked.umd.js"></script>
 <script src="vendor/purify.min.js"></script>
@@ -36,6 +36,7 @@
   --f-body: "Noto Sans KR", system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --f-cond: "Roboto Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
   --f-kanji: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --f-cyber: "Oxanium", "Orbitron", "Rajdhani", "Roboto Condensed", sans-serif;
   --f-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   color-scheme: dark;
 }
@@ -106,32 +107,56 @@ a { color: var(--link); }
 .k-green { font: 900 38px/1 var(--f-kanji); fill: var(--green-hi); letter-spacing: 2px; }
 .ko-status { font: 700 24px/1 var(--f-body); fill: var(--orange-hi); }
 
-/* 패널 위의 글자·클릭 영역 */
+/* 패널 위의 모델명·클릭 영역 */
 .uhit {
   position: absolute; left: var(--l); top: var(--t); width: var(--w); height: var(--h);
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .55cqw;
+  display: flex; align-items: center; justify-content: center;
   background: transparent; border: 0; padding: 0; color: var(--navy); text-align: center;
   -webkit-tap-highlight-color: transparent;
 }
 .uhit:focus-visible { outline: 3px dashed var(--navy); outline-offset: -4px; }
-.u-top { font: 700 clamp(7px, 1.12cqw, 14px)/1.1 var(--f-cond); letter-spacing: .14em; opacity: .85; }
 .u-name {
-  display: block; width: 100%; font-family: var(--f-cond); font-weight: 400; line-height: 1.08;
-  letter-spacing: .01em; white-space: nowrap; overflow: hidden; padding: 0 1%;
+  position: relative; display: block; width: 100%; padding: 0 2%;
+  font-family: var(--f-cyber); font-weight: 800; line-height: 1.04; letter-spacing: .035em;
+  text-transform: uppercase; white-space: nowrap; text-wrap: balance;
   word-break: keep-all; overflow-wrap: anywhere;
+  text-shadow: -.035em 0 rgba(255, 0, 96, .32), .035em 0 rgba(0, 54, 255, .32);
 }
-.u-state { font: 700 clamp(7px, 1.12cqw, 14px)/1.2 var(--f-body); opacity: .9; }
-.uhit.off .u-state::after { content: " ▸"; }
-.uhit:not(.off) .u-state::after { content: " ▾"; }
-.uhit.running .u-state::after, .uhit.done .u-state::after { content: ""; }
+.u-name::before, .u-name::after {
+  content: attr(data-text); position: absolute; inset: 0; padding: inherit;
+  opacity: 0; pointer-events: none; text-shadow: none;
+}
+.u-name.glitch { animation: g-shake .52s steps(2, jump-none) 1; }
+.u-name.glitch::before { opacity: .9; color: #ff1f6a; animation: g-a .52s steps(1, end) 1; }
+.u-name.glitch::after { opacity: .9; color: #2433ff; animation: g-b .52s steps(1, end) 1; }
+@keyframes g-shake {
+  0% { transform: none; } 25% { transform: translateX(-1.6%) skewX(-7deg); }
+  50% { transform: translateX(1.2%); } 75% { transform: translateX(-.6%) skewX(5deg); } 100% { transform: none; }
+}
+@keyframes g-a {
+  0% { clip-path: inset(0 0 72% 0); transform: translateX(-4%); }
+  20% { clip-path: inset(42% 0 36% 0); transform: translateX(3%); }
+  40% { clip-path: inset(78% 0 4% 0); transform: translateX(-2%); }
+  60% { clip-path: inset(14% 0 62% 0); transform: translateX(5%); }
+  80% { clip-path: inset(56% 0 22% 0); transform: translateX(-3%); }
+  100% { clip-path: inset(0 0 100% 0); }
+}
+@keyframes g-b {
+  0% { clip-path: inset(64% 0 10% 0); transform: translateX(4%); }
+  20% { clip-path: inset(8% 0 70% 0); transform: translateX(-3%); }
+  40% { clip-path: inset(30% 0 46% 0); transform: translateX(2%); }
+  60% { clip-path: inset(70% 0 6% 0); transform: translateX(-5%); }
+  80% { clip-path: inset(22% 0 58% 0); transform: translateX(3%); }
+  100% { clip-path: inset(0 0 100% 0); }
+}
 .stage.busy .uhit.off { color: #6fb7d6; }
 
 .hint {
-  margin: 14px auto 0; max-width: 860px; color: var(--muted); font-size: 14px;
-  border-left: 3px solid var(--orange-dim); padding: 4px 0 4px 12px;
+  margin: 14px auto 0; max-width: 860px; display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 4px 22px; color: var(--muted); font-size: 13px;
 }
-.hint ol { margin: 0; padding-left: 20px; }
-.hint li + li { margin-top: 2px; }
+.hint span { white-space: nowrap; }
+.hint b { font: 800 13px/1 var(--f-cyber); color: var(--orange); margin-right: 6px; letter-spacing: .06em; }
 
 /* ───────── 결과 ───────── */
 .session { margin: 18px 0 8px; display: grid; gap: 14px; }
@@ -147,7 +172,7 @@ a { color: var(--link); }
 .final .card-head { border-bottom-color: #4a1d06; }
 .card-title { font-weight: 700; }
 .tag {
-  font: 700 12px/1 var(--f-cond); letter-spacing: .12em; color: var(--navy);
+  font: 800 12px/1 var(--f-cyber); letter-spacing: .1em; color: var(--navy);
   background: var(--cyan); padding: 4px 7px 3px; border-radius: 3px;
 }
 .card.err .tag { background: var(--red); }
@@ -402,18 +427,16 @@ details.tpl textarea {
       <text class="k-green" id="sSmall" x="1390" y="196" text-anchor="middle">接続待機</text>
       <text class="ko-status" id="sKo" x="1540" y="258" text-anchor="end">대기 중</text>
     </svg>
-    <button type="button" class="uhit" id="h-balthasar" data-unit="balthasar" style="--l:38.125%;--t:3.8%;--w:23.75%;--h:42.9%"><span class="u-top"></span><span class="u-name" data-max="0.034"></span><span class="u-state"></span></button>
-    <button type="button" class="uhit" id="h-casper" data-unit="casper" style="--l:5%;--t:44.4%;--w:33.75%;--h:51.1%"><span class="u-top"></span><span class="u-name" data-max="0.04"></span><span class="u-state"></span></button>
-    <button type="button" class="uhit" id="h-melchior" data-unit="melchior" style="--l:61.25%;--t:44.4%;--w:33.75%;--h:51.1%"><span class="u-top"></span><span class="u-name" data-max="0.04"></span><span class="u-state"></span></button>
+    <button type="button" class="uhit" id="h-balthasar" data-unit="balthasar" style="--l:38.125%;--t:3.8%;--w:23.75%;--h:42.9%"><span class="u-name" data-max="0.042"></span></button>
+    <button type="button" class="uhit" id="h-casper" data-unit="casper" style="--l:5%;--t:44.4%;--w:36.25%;--h:51.1%"><span class="u-name" data-max="0.05"></span></button>
+    <button type="button" class="uhit" id="h-melchior" data-unit="melchior" style="--l:58.75%;--t:44.4%;--w:36.25%;--h:51.1%"><span class="u-name" data-max="0.05"></span></button>
   </div>
   <p class="sr" id="live" aria-live="polite"></p>
 
   <div class="hint" id="hint">
-    <ol>
-      <li>세 패널(MELCHIOR·BALTHASAR·CASPER)을 눌러 ChatGPT·Claude·Gemini를 API 키로 연결하세요.</li>
-      <li>연결된 패널을 다시 누르면 그 플랫폼에서 쓸 모델을 고를 수 있습니다.</li>
-      <li>질문을 보내면 세 AI가 동시에 답하고, 입력창 옆에서 고른 마스터 모델이 세 답을 교차검증·팩트체크해 하나로 종합합니다.</li>
-    </ol>
+    <span><b>01</b>패널을 눌러 API 키로 연결</span>
+    <span><b>02</b>패널을 다시 눌러 모델 선택</span>
+    <span><b>03</b>질의하면 MASTER가 세 답을 종합</span>
   </div>
 
   <section class="session" id="session" hidden>
@@ -758,12 +781,11 @@ const PROVIDERS = {
 };
 
 const UNITS = [
-  { id: 'melchior', magi: 'MELCHIOR', no: 1, prov: 'openai' },
-  { id: 'balthasar', magi: 'BALTHASAR', no: 2, prov: 'anthropic' },
-  { id: 'casper', magi: 'CASPER', no: 3, prov: 'google' },
+  { id: 'melchior', no: 1, prov: 'openai' },     // 오른쪽 아래 패널
+  { id: 'balthasar', no: 2, prov: 'anthropic' }, // 위 패널
+  { id: 'casper', no: 3, prov: 'google' },       // 왼쪽 아래 패널
 ];
-const unitOf = prov => UNITS.find(u => u.prov === prov);
-const tagOf = u => `${u.magi}·${u.no}`;
+const numOf = u => '0' + u.no;
 
 const DEFAULT_PROMPT = `당신은 MAGI 시스템의 최종 결의를 내리는 마스터 모델입니다.
 아래 <question>은 사용자의 질문이고, <answers>에는 서로 다른 AI 모델 {{count}}개가 같은 질문에 각자 독립적으로 작성한 답변이 들어 있습니다.
@@ -899,16 +921,17 @@ async function askUnit(run, u) {
     else { r.status = 'error'; r.err = e.message; }
   }
   r.t1 = Date.now();
+  glitch(u.id);
   schedule();
 }
 
 function buildPrompt(run, ok) {
   let answers = ok.map((u, i) => {
     const r = run.units[u.id];
-    return `<answer index="${i + 1}" unit="${tagOf(u)}" model="${r.label} (${PROVIDERS[r.prov].name})">\n${r.text.trim()}\n</answer>`;
+    return `<answer index="${i + 1}" model="${r.label} (${PROVIDERS[r.prov].name})">\n${r.text.trim()}\n</answer>`;
   }).join('\n\n');
   const lost = UNITS.filter(u => ['error', 'stopped'].includes(run.units[u.id]?.status));
-  if (lost.length) answers += `\n\n(참고: ${lost.map(tagOf).join(', ')} 유닛은 응답에 실패해 제외되었습니다.)`;
+  if (lost.length) answers += `\n\n(참고: ${lost.map(u => PROVIDERS[u.prov].product).join(', ')}은(는) 응답에 실패해 제외되었습니다.)`;
   let tpl = S.prompt || DEFAULT_PROMPT;
   if (!tpl.includes('{{question}}')) tpl += '\n\n<question>\n{{question}}\n</question>';
   if (!tpl.includes('{{answers}}')) tpl += '\n\n<answers>\n{{answers}}\n</answers>';
@@ -1025,22 +1048,42 @@ function unitState(u) {
     if (r.status === 'error') return '오류 · 응답 실패';
     if (r.status === 'stopped') return '중단됨';
   }
-  if (c === 'checking') return '연결 확인 중…';
-  if (c === 'error') return '연결 실패 · 눌러서 확인';
-  if (c === 'off') return '미연결 · 눌러서 연결';
-  return busy() ? '대기' : '대기 · 눌러서 모델 변경';
+  if (c === 'checking') return '연결 확인 중';
+  if (c === 'error') return '연결 실패';
+  if (c === 'off') return '미연결';
+  return '대기';
 }
 
 function fitName(el) {
   const W = $('#stage').clientWidth;
-  if (!W) return;
-  const min = Math.max(8, W * 0.012);
-  let size = Math.max(12, W * Number(el.dataset.max || 0.036));
-  el.style.whiteSpace = 'nowrap';
-  el.style.fontSize = size + 'px';
-  while (el.scrollWidth > el.clientWidth + 1 && size > min) { size = Math.max(min, size - 1); el.style.fontSize = size + 'px'; }
-  if (el.scrollWidth > el.clientWidth + 1) el.style.whiteSpace = 'normal';
+  if (!W || !el.textContent) return;
+  const maxH = el.parentElement.clientHeight * 0.8;
+  const max = Math.max(12, W * Number(el.dataset.max || 0.045));
+  const min = Math.max(9, W * 0.014);
+  const set = (size, wrap) => { el.style.fontSize = size + 'px'; el.style.whiteSpace = wrap ? 'normal' : 'nowrap'; };
+  const fits = size => el.scrollWidth <= el.clientWidth + 1 && el.scrollHeight <= Math.min(maxH, size * 2.3);
+  for (let s = max; s >= max * 0.72; s -= 1) { set(s, false); if (fits(s)) return; }   // 한 줄로 크게
+  for (let s = max; s >= min; s -= 1) { set(s, true); if (fits(s)) return; }           // 안 되면 두 줄
+  set(min, true);
 }
+
+/* 글리치: 모델이 바뀌거나 답이 도착했을 때, 그리고 가끔 무작위로 */
+const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function glitch(id) {
+  if (REDUCED_MOTION) return;
+  const el = $('#h-' + id + ' .u-name');
+  el.classList.remove('glitch');
+  void el.offsetWidth;
+  el.classList.add('glitch');
+  clearTimeout(el._gt);
+  el._gt = setTimeout(() => el.classList.remove('glitch'), 560);
+}
+(function idleGlitch() {
+  setTimeout(() => {
+    if (!document.hidden) glitch(UNITS[Math.floor(Math.random() * UNITS.length)].id);
+    idleGlitch();
+  }, 3500 + Math.random() * 7000);
+})();
 
 function updateStage() {
   const run = liveRun();
@@ -1056,13 +1099,16 @@ function updateStage() {
     for (const el of [g, h]) for (const k in cls) el.classList.toggle(k, cls[k]);
     const P = PROVIDERS[u.prov];
     const model = c === 'on' ? S.sel[u.prov] : '';
-    h.querySelector('.u-top').textContent = model ? `${u.magi} · ${P.product.toUpperCase()}` : `${P.product.toUpperCase()} · ${P.name.toUpperCase()}`;
-    const name = (model ? modelLabel(u.prov, model).toUpperCase() : u.magi) + '·' + u.no;
+    const name = (model ? modelLabel(u.prov, model) : P.product).toUpperCase() + '·' + u.no;
     const nameEl = h.querySelector('.u-name');
-    if (nameEl.textContent !== name) { nameEl.textContent = name; fitName(nameEl); }
-    const state = unitState(u);
-    h.querySelector('.u-state').textContent = state;
-    h.setAttribute('aria-label', `${tagOf(u)} — ${P.product}${model ? ', 모델 ' + modelLabel(u.prov, model) : ''}, ${state}`);
+    if (nameEl.textContent !== name) {
+      const first = !nameEl.textContent;
+      nameEl.textContent = name;
+      nameEl.dataset.text = name;
+      fitName(nameEl);
+      if (!first) glitch(u.id);
+    }
+    h.setAttribute('aria-label', `${P.product}${model ? ' · ' + modelLabel(u.prov, model) : ''} · ${unitState(u)}`);
   }
   const stage = $('#stage');
   if (!busy()) $$('.flash', stage).forEach(el => el.classList.remove('flash'));
@@ -1072,7 +1118,7 @@ function updateStage() {
   const nOn = UNITS.filter(u => isOn(u.prov)).length;
   const ph = PHASE[S.phase] || PHASE.idle;
   let small = ph.small, ko = ph.ko;
-  if (S.phase === 'idle' && !nOn) { small = '接続待機'; ko = '연결 대기 · 패널을 눌러 연결'; }
+  if (S.phase === 'idle' && !nOn) { small = '接続待機'; ko = '연결 대기'; }
   if (S.phase === 'asking' && run) {
     const act = UNITS.filter(u => run.units[u.id].status !== 'skip');
     ko = `세 유닛에 질의 중 · 응답 ${act.filter(u => run.units[u.id].status !== 'running').length}/${act.length}`;
@@ -1138,7 +1184,7 @@ function buildSession(run) {
     const art = document.createElement('article');
     art.className = 'card ans';
     art.dataset.unit = u.id;
-    art.innerHTML = `<header class="card-head"><span class="tag">${tagOf(u)}</span><span class="card-title">${esc(r.label || r.model || '')}</span><span class="meta">${esc(PROVIDERS[r.prov].product)}</span><span class="state"></span><span class="spacer"></span><button type="button" class="mini skip" hidden>건너뛰기</button><button type="button" class="mini copy" hidden>복사</button></header><div class="card-body"><div class="md"></div><div class="note" hidden></div></div><button type="button" class="expand">펼치기</button>`;
+    art.innerHTML = `<header class="card-head"><span class="tag">${numOf(u)}</span><span class="card-title">${esc(r.label || r.model || '')}</span><span class="meta">${esc(PROVIDERS[r.prov].product)}</span><span class="state"></span><span class="spacer"></span><button type="button" class="mini skip" hidden>건너뛰기</button><button type="button" class="mini copy" hidden>복사</button></header><div class="card-body"><div class="md"></div><div class="note" hidden></div></div><button type="button" class="expand">펼치기</button>`;
     art.querySelector('.skip').onclick = () => { r.ctrl?.abort(); };
     art.querySelector('.copy').onclick = () => copyText(r.text);
     art.querySelector('.expand').onclick = e => {
@@ -1303,9 +1349,9 @@ function openUnitMenu(u, anchor) {
   const p = u.prov, P = PROVIDERS[p];
   if (!isOn(p)) { openSettings(p); return; }
   openMenu(anchor, {
-    title: `${tagOf(u)} · ${P.product} 모델`,
+    title: `${P.product} 모델`,
     sections: [{ label: '', items: S.models[p].map(m => ({ value: m.id, name: m.label, desc: m.desc })) }],
-    selected: S.sel[p], align: 'center', posEl: anchor.querySelector('.u-state'),
+    selected: S.sel[p], align: 'center', posEl: anchor.querySelector('.u-name'),
     footer: [{ label: '접속 설정', desc: `${P.name} API 키 변경·연결 해제`, onClick: () => openSettings(p) }],
     onSelect: it => { S.sel[p] = it.value; local.set('sel', S.sel); render(); },
   });
@@ -1319,7 +1365,7 @@ function openMasterMenu() {
   const val = (p, id) => p + '\n' + id;
   const primary = on.filter(u => S.sel[u.prov]).map(u => ({
     value: val(u.prov, S.sel[u.prov]), name: modelLabel(u.prov, S.sel[u.prov]),
-    desc: `${tagOf(u)} 유닛 · ${PROVIDERS[u.prov].product}`, prov: u.prov, model: S.sel[u.prov],
+    desc: `${PROVIDERS[u.prov].product} 패널 모델`, prov: u.prov, model: S.sel[u.prov],
   }));
   const more = on.map(u => ({
     label: `${PROVIDERS[u.prov].name} · ${PROVIDERS[u.prov].product}`,
@@ -1327,7 +1373,7 @@ function openMasterMenu() {
   }));
   openMenu(btn, {
     title: '마스터 모델 — 세 답변을 종합할 모델',
-    sections: [{ label: '현재 MAGI 유닛 모델', items: primary }], more,
+    sections: [{ label: '지금 패널에 있는 모델', items: primary }], more,
     selected: S.master ? val(S.master.prov, S.master.model) : '',
     onSelect: it => { S.master = { prov: it.prov, model: it.model }; local.set('master', S.master); render(); },
   });
@@ -1342,7 +1388,7 @@ function buildSettings() {
     div.className = 'prov';
     div.dataset.prov = p;
     div.innerHTML = `
-      <div class="prov-head"><span class="tag">${tagOf(u)}</span><b>${P.product}</b><span class="meta">${P.name}</span><span class="prov-stat"></span></div>
+      <div class="prov-head"><span class="tag">${numOf(u)}</span><b>${P.product}</b><span class="meta">${P.name}</span><span class="prov-stat"></span></div>
       <div class="keyrow">
         <input type="password" placeholder="${P.name} API 키 (${P.keyHint})" aria-label="${P.name} API 키" spellcheck="false" autocomplete="off">
         <button type="button" class="btn ghost eye">보기</button>
@@ -1395,7 +1441,7 @@ function openSettings(focusProv) {
 function announce(msg) { if (msg) $('#live').textContent = msg; }
 
 /* ════════════════ 깜빡임: 대기 중 세 패널이 번갈아 반짝 ════════════════ */
-const BLINK_MS = matchMedia('(prefers-reduced-motion: reduce)').matches ? 900 : 320;
+const BLINK_MS = REDUCED_MOTION ? 900 : 320;
 let blinkStep = 0;
 function blinkList() {
   const run = liveRun();
